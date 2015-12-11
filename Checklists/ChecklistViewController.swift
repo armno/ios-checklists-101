@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChecklistViewController: UITableViewController, AddItemViewControllerDelegate {
+class ChecklistViewController: UITableViewController, ItemDeailViewControllerDelegate {
   
   var items: [ChecklistItem]
   
@@ -103,13 +103,13 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
     if segue.identifier == "AddItem" {
       
       let navigationController = segue.destinationViewController as! UINavigationController
-      let controller = navigationController.topViewController as! AddItemViewController
+      let controller = navigationController.topViewController as! ItemDeailViewController
       
       controller.delegate = self
     } else if segue.identifier == "EditItem" {
       
       let navigationController = segue.destinationViewController as! UINavigationController
-      let controller = navigationController.topViewController as! AddItemViewController
+      let controller = navigationController.topViewController as! ItemDeailViewController
       
       controller.delegate = self
       
@@ -137,11 +137,11 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
     label.text = item.text
   }
   
-  func addItemViewControllerDidCancel(controller: AddItemViewController) {
+  func itemDetailViewControllerDidCancel(controller: ItemDeailViewController) {
     dismissViewControllerAnimated(true, completion: nil)
   }
   
-  func addItemViewController(controller: AddItemViewController, didFinishAddingItem item: ChecklistItem) {
+  func itemDetailViewController(controller: ItemDeailViewController, didFinishAddingItem item: ChecklistItem) {
     
     let newRowIndex = items.count
     
@@ -154,7 +154,7 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
     dismissViewControllerAnimated(true, completion: nil)
   }
   
-  func addItemViewController(controller: AddItemViewController, didFinishEditingItem item: ChecklistItem) {
+  func itemDetailViewController(controller: ItemDeailViewController, didFinishEditingItem item: ChecklistItem) {
     if let index = items.indexOf(item) {
       let indexPath = NSIndexPath(forRow: index, inSection: 0)
       if let cell = tableView.cellForRowAtIndexPath(indexPath) {
