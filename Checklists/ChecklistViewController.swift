@@ -48,48 +48,55 @@ class ChecklistViewController: UITableViewController {
     super.init(coder: aDecoder)
   }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    // Do any additional setup after loading the view, typically from a nib.
+  }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+  override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    // Dispose of any resources that can be recreated.
+  }
     
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
-    }
+  override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return items.count
+  }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-      // get an active/current cell from the prototype cell
-      let cell = tableView.dequeueReusableCellWithIdentifier("ChecklistItem", forIndexPath: indexPath)
+  override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+      
+    // get an active/current cell from the prototype cell
+    let cell = tableView.dequeueReusableCellWithIdentifier("ChecklistItem", forIndexPath: indexPath)
+    
+    let item = items[indexPath.row]
+    
+    // we added the tag `1000` to the label.
+    // this gets a reference to a UILabel with the tag `1000`
+    configureTextForCell(cell, withChecklistItem: item)
+    configureCheckmarkForCell(cell, withChecklistItem: item)
+      
+    return cell
+  }
+    
+  override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+      
+    if let cell = tableView.cellForRowAtIndexPath(indexPath) {
       
       let item = items[indexPath.row]
-      
-      // we added the tag `1000` to the label.
-      // this gets a reference to a UILabel with the tag `1000`
-      configureTextForCell(cell, withChecklistItem: item)
+      item.toggleChecked()
       configureCheckmarkForCell(cell, withChecklistItem: item)
         
-      return cell
     }
+      
+    tableView.deselectRowAtIndexPath(indexPath, animated: true)
+  }
+  
+  override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    items.removeAtIndex(indexPath.row)
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-      if let cell = tableView.cellForRowAtIndexPath(indexPath) {
-        
-        let item = items[indexPath.row]
-        item.toggleChecked()
-        configureCheckmarkForCell(cell, withChecklistItem: item)
-          
-      }
-        
-      tableView.deselectRowAtIndexPath(indexPath, animated: true)
-    }
+    let indexPaths = [indexPath]
+    tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+  }
   
   func configureCheckmarkForCell(cell: UITableViewCell, withChecklistItem item: ChecklistItem) {
     
@@ -104,6 +111,18 @@ class ChecklistViewController: UITableViewController {
   func configureTextForCell(cell: UITableViewCell, withChecklistItem item: ChecklistItem) {
     let label = cell.viewWithTag(1000) as! UILabel
     label.text = item.text
+  }
+  
+  @IBAction func addItem() {
+    let newRowIndex = items.count
+    let item = ChecklistItem()
+    item.text = "I am a new row"
+    item.checked = true
+    items.append(item)
+    
+    let indexPath = NSIndexPath(forRow: newRowIndex, inSection: 0)
+    let indexPaths = [indexPath]
+    tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
   }
 
 }
